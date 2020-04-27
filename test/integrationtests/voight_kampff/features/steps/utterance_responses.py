@@ -118,7 +118,7 @@ def _match_dialog_patterns(dialogs, sentence):
 
 
 @given('{lang} speaking user')
-def given_english(context, lang):
+def given_language(context, lang):
     """Identify the language to use when processing a user request / statement.
     
     Languages may be passed using:

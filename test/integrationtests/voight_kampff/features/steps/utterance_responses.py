@@ -117,9 +117,64 @@ def _match_dialog_patterns(dialogs, sentence):
         return False, debug
 
 
-@given('an english speaking user')
-def given_english(context):
-    context.lang = 'en-us'
+@given('{lang} speaking user')
+def given_english(context, lang):
+    """Identify the language to use when processing a user request / statement.
+    
+    Languages may be passed using:
+        - five character language code (eg: en-US)
+        - common name (eg: English)
+        - common name + country / region (eg: English (United States)
+
+    Some additional variations may be available, to minimize errors and
+    improve developer user experience (eg: English (US)).
+
+    A prefix may be used to improve readability of the statement. This is
+    removed by the system for prefixes in the removed_prefixes list. The
+    following examples would all render correctly:
+        - Given a Spanish speaking user
+        - Given an English speaking user
+        - Given Danish speaking user
+
+    If no language is matched, a ValueError is thrown and the test will fail.
+    """
+    removed_prefixes = ['a', 'an']
+    available_languages = {
+        'ca-es': set(['catalan', 'catalan (catalan)', 'spanish (catalan)']),
+        'da-dk': set(['danish', 'danish (denmark)']),
+        'de-de': set(['german', 'german (germany)']),
+        'en-us': set(['english', 'english (us)', 'english (u.s.)',
+                      'english (united states)',
+                      'english (united states of america)']),
+        'es-es': set(['spanish', 'spanish (spain)']),
+        'fr-fr': set(['french', 'french (france)']),
+        'hu-hu': set(['hungarian', 'hungarian (hungary)']),
+        'it-it': set(['italian', 'italian (italy)']),
+        'nl-nl': set(['dutch', 'dutch (netherlands)',
+                      'dutch (the netherlands)']),
+        'pt-pt': set(['portuguese', 'portuguese (portugal)']),
+        'ru-ru': set(['russian', 'russian (russia)']),
+        'sv-fi': set(['swedish (finland)']),
+        'sv-se': set(['swedish', 'swedish (sweden)']),
+        'tr-tr': set(['turkish', 'turkish (turkey)'])
+    }
+
+    for prefix in removed_prefixes:
+        prefix += ' '  # Add a trailing space to keep removed_prefixes clean
+        if prefix == lang[0:len(prefix)]:
+            lang = lang[len(prefix):]
+            break
+    lang = lang.strip()
+    if lang in available_languages:
+        context.lang = language
+        return
+    for lang_code, lang_keywords in available_languages.items()::
+        if language in lang_keywords:
+            context.lang = lang_code
+            return
+    raise ValueError("The provided language was not identified or is not "
+                     + "currently supported by Mycroft's Voight Kampff test "
+                     + "suite.")
 
 
 @when('the user says "{text}"')

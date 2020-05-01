@@ -95,12 +95,11 @@ def before_all(context):
 
 
 def before_feature(context, feature):
-    context.log.info('TAGTAGTAG {}'.format(feature.tags))
     if feature.tags:
         for tag in feature.tags:
-            if '@skill.' in tag:
-                context.skill_name = tag
-                context.log.info('Skill Name: {}'.format(tag))
+            if 'skill=' in tag:
+                context.skill_name = tag[6:]
+                context.log.info('Skill Name: {}'.format(context.skill_name))
     context.log.info('Starting tests for {}'.format(feature.name))
     for scenario in feature.scenarios:
         patch_scenario_with_autoretry(scenario, max_attempts=2)

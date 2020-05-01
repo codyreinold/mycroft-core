@@ -117,13 +117,29 @@ def _match_dialog_patterns(dialogs, sentence):
         return False, debug
 
 
-@given('an english speaking user')
-def given_english(context):
-    context.lang = 'en-us'
+@given("the user's {config_name} is {config_value}")
+def given_user(context, config_name, config_value):
+    name = config_name.lower()
+    value = config_value.lower()
+    if name == 'language':
+        if value in ['english', 'en-us']:
+            context.lang = 'en-us'
+            return
+        raise ValueError(f'"{value}" testing is not currently supported.')
+    raise ValueError(f'"{name}" cannot currently be configured for tests.')
+
+
+@given("the skills's {config_name} is {config_value}")
+def given_skill_(context, config_name, config_value):
+    name = config_name.lower()
+    value = config_value.lower()
+    raise ValueError(f'"{name}" cannot currently be configured for tests.')
 
 
 @when('the user says "{text}"')
 def when_user_says(context, text):
+    time.sleep(2)
+    wait_while_speaking()
     context.bus.emit(Message('recognizer_loop:utterance',
                              data={'utterances': [text],
                                    'lang': context.lang,
@@ -198,20 +214,6 @@ def then_contains(context, text):
     assert passed, assert_msg
 
 
-@then('the user replies with "{text}"')
-@then('the user replies "{text}"')
-@then('the user says "{text}"')
-def then_user_follow_up(context, text):
-    time.sleep(2)
-    wait_while_speaking()
-    context.bus.emit(Message('recognizer_loop:utterance',
-                             data={'utterances': [text],
-                                   'lang': context.lang,
-                                   'session': '',
-                                   'ident': time.time()},
-                             context={'client_name': 'mycroft_listener'}))
-
-
 @then('mycroft should send the message "{message_type}"')
 def then_messagebus_message(context, message_type):
     cnt = 0
@@ -223,3 +225,12 @@ def then_messagebus_message(context, message_type):
             cnt += 1
 
         time.sleep(SLEEP_LENGTH)
+
+"""
+
+
+the response should be anything
+the response should be from file {}
+the response should be exactly {}
+the response should contain {}
+"""

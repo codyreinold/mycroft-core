@@ -95,8 +95,6 @@ def before_all(context):
 
 
 def before_feature(context, feature):
-    context.log.error(''.format(feature.tags))
-    exit()
     if feature.tags:
         for tag in feature.tags:
             if '@skill.' in tag:

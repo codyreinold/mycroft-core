@@ -45,7 +45,7 @@ def copy_feature_files(source, destination, skill_name):
         shutil.copyfile(f, join(destination, f'{skill_name}.{basename(f)}'))
 
 
-def copy_step_files(source, destination):
+def copy_step_files(source, destination, skill_name):
     """Copy all python files from source to destination."""
     # Copy feature files to the feature directory
     for f in glob(join(source, '*.py')):
@@ -144,7 +144,8 @@ def collect_test_cases(msm, skills):
 
             step_dir = join(behave_dir, 'steps')
             if exists(step_dir):
-                copy_step_files(step_dir, join(FEATURE_DIR, 'steps'))
+                copy_step_files(step_dir,
+                                join(FEATURE_DIR, 'steps', skill_name))
         else:
             # Generate feature file if no data exists yet
             print('No feature files exists for {}, '

@@ -144,8 +144,8 @@ def collect_test_cases(msm, skills):
 
             step_dir = join(behave_dir, 'steps')
             if exists(step_dir):
-                copy_step_files(step_dir,
-                                join(FEATURE_DIR, 'steps', skill_name))
+                copy_step_files(step_dir, join(FEATURE_DIR, 'steps'),
+                                skill_name)
         else:
             # Generate feature file if no data exists yet
             print('No feature files exists for {}, '

@@ -42,14 +42,16 @@ def copy_feature_files(source, destination, skill_name):
     """Copy all feature files from source to destination."""
     # Copy feature files to the feature directory
     for f in glob(join(source, '*.feature')):
-        shutil.copyfile(f, join(destination, f'{skill_name}.{basename(f)}'))
+        shutil.copyfile(f, join(destination, '{}.{}'.format(skill_name,
+                                                            basename(f))))
 
 
 def copy_step_files(source, destination, skill_name):
     """Copy all python files from source to destination."""
     # Copy feature files to the feature directory
     for f in glob(join(source, '*.py')):
-        shutil.copyfile(f, join(destination, f'{skill_name}.{basename(f)}'))
+        shutil.copyfile(f, join(destination, '{}.{}'.format(skill_name,
+                                                            basename(f))))
 
 
 def apply_config(config, args):

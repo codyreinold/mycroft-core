@@ -99,8 +99,10 @@ def before_feature(context, feature):
         for tag in feature.tags:
             if 'skill=' in tag:
                 context.skill_name = tag[6:]
-                context.log.info('Skill Name: {}'.format(context.skill_name))
-    context.log.info('Starting tests for {}'.format(feature.name))
+    if not context.skill_name:
+        raise ValueError('Skill name tag malformed or missing.')
+    context.log.info('Starting tests for {}: {}'.format(context.skill_name, 
+                                                        feature.name))
     for scenario in feature.scenarios:
         patch_scenario_with_autoretry(scenario, max_attempts=2)
 
